@@ -1,2 +1,5 @@
 hdf5storage
 yacs
+scipy==1.2.1
+pandas
+tensorboardX
