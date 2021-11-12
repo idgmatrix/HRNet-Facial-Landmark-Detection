@@ -124,6 +124,7 @@ Please specify the configuration file in `experiments` (learning rate should be 
 ````bash
 python tools/train.py --cfg <CONFIG-FILE>
 # example:
+python tools/train.py --cfg experiments/300w/face_alignment_300w_hrnet_w18.yaml
 python tools/train.py --cfg experiments/wflw/face_alignment_wflw_hrnet_w18.yaml
 ````
 
@@ -131,6 +132,7 @@ python tools/train.py --cfg experiments/wflw/face_alignment_wflw_hrnet_w18.yaml
 ````bash
 python tools/test.py --cfg <CONFIG-FILE> --model-file <MODEL WEIGHT> 
 # example:
+python tools/test.py --cfg experiments/300w/face_alignment_300w_hrnet_w18.yaml --model-file HR18-300W.pth
 python tools/test.py --cfg experiments/wflw/face_alignment_wflw_hrnet_w18.yaml --model-file HR18-WFLW.pth
 ````
 
