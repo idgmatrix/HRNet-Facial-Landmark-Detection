@@ -62,7 +62,8 @@ def main():
     model = nn.DataParallel(model, device_ids=gpus).cuda()
 
     # loss
-    criterion = torch.nn.MSELoss(size_average=True).cuda()
+    ##criterion = torch.nn.MSELoss(size_average=True).cuda() # will be deprecated
+    criterion = torch.nn.MSELoss(reduction='mean').cuda()
 
     optimizer = utils.get_optimizer(config, model)
     best_nme = 100
@@ -111,10 +112,11 @@ def main():
     )
 
     for epoch in range(last_epoch, config.TRAIN.END_EPOCH):
-        lr_scheduler.step()
+        ##lr_scheduler.step() # change oder
 
         function.train(config, train_loader, model, criterion,
                        optimizer, epoch, writer_dict)
+        lr_scheduler.step()
 
         # evaluate
         nme, predictions = function.validate(config, val_loader, model,

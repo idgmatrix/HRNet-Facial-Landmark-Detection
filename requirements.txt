@@ -1,5 +1,7 @@
 hdf5storage
 yacs
-scipy==1.2.1
+Pillow
+scikit-image
+scipy
 pandas
 tensorboardX

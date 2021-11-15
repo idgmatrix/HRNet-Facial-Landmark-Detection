@@ -7,7 +7,9 @@
 import cv2
 import torch
 import scipy
-import scipy.misc
+#import scipy.misc
+import skimage
+import skimage.transform
 import numpy as np
 
 
@@ -175,7 +177,7 @@ def crop(img, center, scale, output_size, rot=0):
             return torch.zeros(output_size[0], output_size[1], img.shape[2]) \
                         if len(img.shape) > 2 else torch.zeros(output_size[0], output_size[1])
         else:
-            img = scipy.misc.imresize(img, [new_ht, new_wd])  # (0-1)-->(0-255)
+            img = skimage.transform.resize(img, [new_ht, new_wd])  # (0-1)-->(0-255)
             center_new[0] = center_new[0] * 1.0 / sf
             center_new[1] = center_new[1] * 1.0 / sf
             scale = scale / sf
@@ -207,9 +209,9 @@ def crop(img, center, scale, output_size, rot=0):
 
     if not rot == 0:
         # Remove padding
-        new_img = scipy.misc.imrotate(new_img, rot)
+        new_img = skimage.transform.rotate(new_img, rot)
         new_img = new_img[pad:-pad, pad:-pad]
-    new_img = scipy.misc.imresize(new_img, output_size)
+    new_img = skimage.transform.resize(new_img, output_size)
     return new_img
 
 
