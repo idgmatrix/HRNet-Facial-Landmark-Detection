@@ -66,6 +66,7 @@ def main():
         model.module.load_state_dict(state_dict)
     '''
     state_dict = torch.load(args.model_file)
+    #print(state_dict)
     from collections import OrderedDict
 
     new_state_dict = OrderedDict()

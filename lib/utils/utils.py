@@ -94,13 +94,14 @@ def save_checkpoint(states, predictions, is_best,
     #os.symlink(os.path.join(output_dir, filename), latest_path)
 
     if is_best and 'state_dict' in states.keys():
-        torch.save(states['state_dict'].module, os.path.join(output_dir, 'model_best.pth'))
+        #torch.save(states['state_dict'].module, os.path.join(output_dir, 'model_best.pth'))
+        torch.save(states['state_dict'], os.path.join(output_dir, 'model_best.pth'))
 
 def find_latest_checkpoint(final_output_dir):
     path_of_checkpoint = os.path.join(final_output_dir, 'checkpoint*.pth')
     list_of_checkpoints = glob.glob(path_of_checkpoint)
     if len(list_of_checkpoints) == 0:
-        return None
+        return ''
     latest_checkpoint = max(list_of_checkpoints, key=os.path.getctime)
 
     return latest_checkpoint
