@@ -10,6 +10,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+import glob
 import logging
 import time
 from pathlib import Path
@@ -87,11 +88,19 @@ def save_checkpoint(states, predictions, is_best,
     torch.save(states, os.path.join(output_dir, filename))
     torch.save(preds, os.path.join(output_dir, 'current_pred.pth'))
 
-    latest_path = os.path.join(output_dir, 'latest.pth')
-    if os.path.islink(latest_path):
-        os.remove(latest_path)
-    os.symlink(os.path.join(output_dir, filename), latest_path)
+    #latest_path = os.path.join(output_dir, 'latest.pth')
+    #if os.path.islink(latest_path):
+    #    os.remove(latest_path)
+    #os.symlink(os.path.join(output_dir, filename), latest_path)
 
     if is_best and 'state_dict' in states.keys():
         torch.save(states['state_dict'].module, os.path.join(output_dir, 'model_best.pth'))
 
+def find_latest_checkpoint(final_output_dir):
+    path_of_checkpoint = os.path.join(final_output_dir, 'checkpoint*.pth')
+    list_of_checkpoints = glob.glob(path_of_checkpoint)
+    if len(list_of_checkpoints) == 0:
+        return None
+    latest_checkpoint = max(list_of_checkpoints, key=os.path.getctime)
+
+    return latest_checkpoint

@@ -69,13 +69,15 @@ def main():
     best_nme = 100
     last_epoch = config.TRAIN.BEGIN_EPOCH
     if config.TRAIN.RESUME:
-        model_state_file = os.path.join(final_output_dir,
-                                        'latest.pth')
-        if os.path.islink(model_state_file):
+        #model_state_file = os.path.join(final_output_dir, 'latest.pth')
+        model_state_file = utils.find_latest_checkpoint(final_output_dir)
+        print(model_state_file)
+        if os.path.isfile(model_state_file):
             checkpoint = torch.load(model_state_file)
             last_epoch = checkpoint['epoch']
             best_nme = checkpoint['best_nme']
-            model.load_state_dict(checkpoint['state_dict'])
+            #model.load_state_dict(checkpoint['state_dict'])
+            model = checkpoint['state_dict']
             optimizer.load_state_dict(checkpoint['optimizer'])
             print("=> loaded checkpoint (epoch {})"
                   .format(checkpoint['epoch']))

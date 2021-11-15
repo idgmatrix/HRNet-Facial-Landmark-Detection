@@ -447,7 +447,7 @@ class HighResolutionNet(nn.Module):
         return x
 
     def init_weights(self, pretrained=''):
-        logger.info('=> init weights from normal distribution')
+        logger.info('=> init weights with normal distribution or load from pretrained model')
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 # nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
@@ -458,13 +458,13 @@ class HighResolutionNet(nn.Module):
                 nn.init.constant_(m.bias, 0)
         if os.path.isfile(pretrained):
             pretrained_dict = torch.load(pretrained)
-            logger.info('=> loading pretrained model {}'.format(pretrained))
+            logger.info('=> loading from pretrained model {}'.format(pretrained))
             model_dict = self.state_dict()
             pretrained_dict = {k: v for k, v in pretrained_dict.items()
                                if k in model_dict.keys()}
             for k, _ in pretrained_dict.items():
                 logger.info(
-                    '=> loading {} pretrained model {}'.format(k, pretrained))
+                    '=> loading {} from pretrained model {}'.format(k, pretrained))
             model_dict.update(pretrained_dict)
             self.load_state_dict(model_dict)
 
