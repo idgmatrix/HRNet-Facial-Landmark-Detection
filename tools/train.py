@@ -128,7 +128,7 @@ def main():
         best_nme = min(nme, best_nme)
 
         logger.info('=> saving checkpoint to {}'.format(final_output_dir))
-        print("best:", is_best)
+        logger.info("best: {}".format(is_best))
         utils.save_checkpoint(
             {"state_dict": model,
              "epoch": epoch + 1,
