@@ -13,6 +13,7 @@ import logging
 
 import torch
 import numpy as np
+from PIL import Image, ImageDraw
 
 from .evaluation import decode_preds, compute_nme
 
@@ -170,6 +171,9 @@ def validate(config, val_loader, model, criterion, epoch, writer_dict):
     return nme, predictions
 
 
+mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
+
 def inference(config, data_loader, model):
     batch_time = AverageMeter()
     data_time = AverageMeter()
@@ -193,6 +197,22 @@ def inference(config, data_loader, model):
             score_map = output.data.cpu()
             preds = decode_preds(score_map, meta['center'], meta['scale'], [64, 64])
 
+            if i == 0:
+                print(inp.size())
+                print(score_map.size())
+                print(preds.size())
+                print(preds[0])
+                inp_np = inp.permute(0, 2, 3, 1).numpy()
+                print(inp_np.shape)
+                sm = np.max(score_map.numpy(), axis=1) * 255
+                for ii in range(8):
+                    im = Image.fromarray(sm[ii]).convert('RGB')
+                    im.save('output/score_map_max{}.png'.format(ii))
+                    inp_im = inp_np[ii]
+                    inp_im = (inp_im * std + mean) * 255
+                    inp_im = inp_im.astype('uint8')
+                    inp_im = Image.fromarray(inp_im)
+                    inp_im.save('output/input{}.png'.format(ii))
             # NME
             nme_temp = compute_nme(preds, meta)
 
