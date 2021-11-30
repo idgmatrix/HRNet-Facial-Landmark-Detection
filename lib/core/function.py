@@ -192,27 +192,23 @@ def inference(config, data_loader, model):
 
     with torch.no_grad():
         for i, (inp, target, meta) in enumerate(data_loader):
+            batch_size = len(inp)
             data_time.update(time.time() - end)
             output = model(inp)
             score_map = output.data.cpu()
             preds = decode_preds(score_map, meta['center'], meta['scale'], [64, 64])
 
             if i == 0:
-                print(inp.size())
-                print(score_map.size())
-                print(preds.size())
-                print(preds[0])
                 inp_np = inp.permute(0, 2, 3, 1).numpy()
-                print(inp_np.shape)
+                inp_np = (inp_np * std + mean) * 255
                 sm = np.max(score_map.numpy(), axis=1) * 255
-                for ii in range(8):
-                    im = Image.fromarray(sm[ii]).convert('RGB')
-                    im.save('output/score_map_max{}.png'.format(ii))
+                for ii in range(batch_size):
                     inp_im = inp_np[ii]
-                    inp_im = (inp_im * std + mean) * 255
                     inp_im = inp_im.astype('uint8')
                     inp_im = Image.fromarray(inp_im)
                     inp_im.save('output/input{}.png'.format(ii))
+                    im = Image.fromarray(sm[ii]).convert('RGB')
+                    im.save('output/score_map_max{}.png'.format(ii))
             # NME
             nme_temp = compute_nme(preds, meta)
 
